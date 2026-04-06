@@ -7,7 +7,7 @@ Please refer to [setup.md](setup.md) for comprehensive setup and running instruc
 ---
 
 ## 📖 What is it?
-Every piece of software has bugs. Some bugs are harmless, some can be exploited by hackers to steal data, crash systems, or take control of servers. These exploitable bugs are called **vulnerabilities**, and they get published publicly as **CVEs** (Common Vulnerabilities and Exposures) — basically a global registry of known security holes.
+Every piece of software has bugs. Some bugs are harmless, some can be exploited by hackers to steal data, crash systems, or take control of servers. These exploitable bugs are called **vulnerabilities**, and they get published publicly as CVEs (Common Vulnerabilities and Exposures) — basically a global registry of known security holes.
 
 The problem? A large company gets **hundreds of new CVEs every week** across all their software. They can't patch everything at once. Someone — or something — needs to **read each vulnerability, understand the context, and decide what to patch first.**
 
@@ -153,6 +153,56 @@ Keeps episode state tracking isolated. `reset()` just tells state manager to wip
 ---
 
 ## 🏗️ Complete System Architecture
+
+```mermaid
+flowchart TD
+    subgraph Layer1 ["Layer 1 — data sources"]
+        NVD["NVD API<br/>Real CVE records"]
+        AssetGen["Asset generator<br/>Synthetic company infra"]
+        Cache["CVE cache<br/>cves.json, no API dep"]
+    end
+
+    subgraph Layer2 ["Layer 2 — environment core"]
+        Models["models.py<br/>Pydantic types"]
+        Env["environment.py<br/>reset / step / state"]
+        StateM["state manager<br/>Episode tracking"]
+        Reward["reward.py"]
+    end
+
+    subgraph Layer3 ["Layer 3 — tasks + graders"]
+        T1["Task 1 — easy<br/>CVSS severity ranking<br/>Score: sort accuracy"]
+        T2["Task 2 — medium<br/>Asset-aware priority<br/>Score: weighted match"]
+        T3["Task 3 — hard<br/>Full triage + noise<br/>Score: multi-criteria"]
+    end
+
+    subgraph Layer4 ["Layer 4 — API server (FastAPI)"]
+        RST(["POST /reset"])
+        STP(["POST /step"])
+        STA(["GET /state"])
+    end
+
+    subgraph Layer5a ["Layer 5a — inference"]
+        Inf["inference.py<br/>OpenAI client"]
+        LLM["LLM model<br/>Via API_BASE_URL"]
+    end
+    
+    subgraph Layer5b ["Layer 5b — deployment"]
+        Doc["Dockerfile<br/>Containerized env"]
+        HF["HF Space<br/>Public deployment"]
+    end
+
+    Spec(["openenv.yaml — spec compliance"])
+
+    Layer1 --> Layer2
+    Layer2 --> Layer3
+    Layer3 --> Layer4
+    Layer4 --> Layer5a
+    Layer4 --> Layer5b
+    
+    %% Centering Spec at the bottom
+    Layer5a ~~~ Spec
+    Layer5b ~~~ Spec
+```
 
 ### Layer 1 — Data Sources
 This is where all raw information comes from. Three components work together here. The **NVD API** is the internet's official CVE database. The **Asset Generator** is a Python script using Faker that creates a fake company's server inventory (web servers, databases, payment systems) so the agent has something to prioritize against. The **CVE cache** (`cves.json`) saves fetched CVEs locally so your inference script never depends on the NVD API being available during judging — critical for the 20-minute time limit.
