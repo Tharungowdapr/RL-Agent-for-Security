@@ -199,7 +199,7 @@ flowchart TD
     Layer4 --> Layer5a
     Layer4 --> Layer5b
     
-    %% Centering Spec at the bottom
+    %% To keep the spec pill centered at the bottom
     Layer5a ~~~ Spec
     Layer5b ~~~ Spec
 ```
