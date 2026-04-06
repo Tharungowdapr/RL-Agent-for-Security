@@ -1,0 +1,33 @@
+name: security-vulnerability-triage
+version: "1.0.0"
+description: >
+  An OpenEnv environment where an AI agent triages real-world
+  security vulnerabilities (CVEs) by severity, asset criticality,
+  and exploitability. Tasks range from basic ranking to full
+  triage under noisy, conflicting signals.
+author: your-name
+tags:
+  - openenv
+  - cybersecurity
+  - triage
+  - real-world
+tasks:
+  - id: task1_severity_ranking
+    name: Basic Severity Ranking
+    difficulty: easy
+    description: Rank 10 CVEs by CVSS severity score
+  - id: task2_asset_prioritization
+    name: Asset-Aware Prioritization
+    difficulty: medium
+    description: Prioritize CVEs considering asset criticality
+  - id: task3_full_triage
+    name: Full Triage Under Noise
+    difficulty: hard
+    description: Full triage with red herrings and limited patch slots
+observation_space:
+  type: object
+  description: List of CVEs with metadata and company asset inventory
+action_space:
+  type: object
+  description: Ordered list of CVE IDs representing triage priority
+reward_range: [0.0, 1.0]
