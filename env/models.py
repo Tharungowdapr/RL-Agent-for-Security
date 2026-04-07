@@ -11,6 +11,11 @@ class CVERecord(BaseModel):
     patch_available: bool
     affected_software: List[str]
     published_date: str
+    # Threat intelligence fields (enriched post-fetch)
+    epss_score: float = Field(default=0.0, ge=0.0, le=1.0,
+                              description="EPSS exploit probability (0-1)")
+    in_kev: bool = Field(default=False,
+                         description="Present in CISA KEV catalog")
 
 
 class CompanyAsset(BaseModel):

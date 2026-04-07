@@ -7,6 +7,7 @@ from env.state_manager import EpisodeState
 from env.reward import compute_reward
 from data.nvd_fetcher import load_or_fetch_cves
 from data.asset_generator import generate_assets
+from data.threat_intel import enrich_cves_with_threat_intel
 from tasks import task1_severity_ranking, task2_asset_prioritization, task3_full_triage
 
 TASK_MODULES = {
@@ -20,6 +21,8 @@ class SecurityTriageEnv:
     def __init__(self):
         self.state = EpisodeState()
         self._all_cves = load_or_fetch_cves()
+        # Enrich with live threat intelligence (EPSS + CISA KEV)
+        enrich_cves_with_threat_intel(self._all_cves)
 
     def reset(self, task_id: Optional[str] = None) -> ResetResult:
         if task_id is None:

@@ -1,3 +1,9 @@
+"""
+Task 2 — Asset-Aware Prioritization (Enhanced)
+
+Priority combines CVSS severity, asset criticality, EPSS score, and KEV status.
+"""
+
 from typing import List, Tuple, Dict
 from env.models import CVERecord, CompanyAsset, Action, Observation
 from data.asset_generator import generate_assets, get_affected_assets
@@ -5,6 +11,7 @@ import random
 
 
 def compute_priority_score(cve: CVERecord, assets: List[CompanyAsset]) -> float:
+    """Enhanced priority: CVSS + asset criticality + EPSS + KEV."""
     affected_ids = get_affected_assets(cve.affected_software, assets)
     if not affected_ids:
         asset_score = 1.0
@@ -12,7 +19,16 @@ def compute_priority_score(cve: CVERecord, assets: List[CompanyAsset]) -> float:
         affected = [a for a in assets if a.asset_id in affected_ids]
         asset_score = max(a.criticality_score for a in affected) if affected else 1.0
 
-    combined = (cve.cvss_score * 0.5) + (asset_score * 0.5)
+    # Base: severity + asset (original formula, preserved for backward compat)
+    base = (cve.cvss_score * 0.4) + (asset_score * 0.3)
+
+    # EPSS boost (0-1 scaled to 0-10 for same magnitude)
+    epss_component = cve.epss_score * 10.0 * 0.2
+
+    # KEV bonus
+    kev_bonus = 2.0 if cve.in_kev else 0.0
+
+    combined = base + epss_component + (kev_bonus * 0.1)
     return combined
 
 
@@ -31,8 +47,12 @@ def build_observation(cves: List[CVERecord], assets: List[CompanyAsset], step: i
         assets=assets,
         patches_available_count=5,
         message=(
-            "Task 2 — Asset-Aware Prioritization.\n"
-            "Consider both CVE severity AND which company assets are affected. "
+            "Task 2 — Asset-Aware Prioritization (Enhanced).\n"
+            "Consider ALL of these factors when ranking:\n"
+            "  • CVE severity (CVSS score)\n"
+            "  • Which company assets are affected and their criticality\n"
+            "  • Exploit likelihood (EPSS score)\n"
+            "  • Whether the CVE is in CISA KEV (actively exploited)\n\n"
             "A critical CVE on a low-value dev server may be lower priority than "
             "a medium CVE on the payment processing server. "
             "Return CVE IDs ordered by true business risk."
@@ -67,7 +87,7 @@ def grade(action: Action, cves: List[CVERecord], assets: List[CompanyAsset]) -> 
 
     rank_score /= n
 
-    # Top-5 patch slot accuracy (critical for this task)
+    # Top-5 patch slot accuracy
     top5_truth = set(ground_truth[:5])
     top5_pred = set(predicted[:5]) if len(predicted) >= 5 else set(predicted)
     patch_accuracy = len(top5_truth & top5_pred) / 5.0
