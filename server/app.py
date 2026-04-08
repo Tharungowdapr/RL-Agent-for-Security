@@ -85,5 +85,8 @@ else:
     def root_no_frontend():
         return {"message": "Server is running, but frontend was not found. Build the frontend first."}
 
+def main():
+    uvicorn.run("server.app:app", host="0.0.0.0", port=7860, reload=False)
+
 if __name__ == "__main__":
-    uvicorn.run("api.server:app", host="0.0.0.0", port=7860, reload=False)
+    main()

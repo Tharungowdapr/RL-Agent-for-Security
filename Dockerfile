@@ -45,4 +45,4 @@ WORKDIR /app
 EXPOSE 7860
 
 # Start the server
-CMD ["python", "api/server.py"]
+CMD ["python", "server/app.py"]
