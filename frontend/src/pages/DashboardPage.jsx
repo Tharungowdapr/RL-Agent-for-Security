@@ -1,40 +1,24 @@
 import { useEffect, useState } from 'react'
-import { DndContext, closestCenter } from '@dnd-kit/core'
-import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { useEnvironment } from '../hooks/useEnvironment'
 import { CVECard } from '../components/cve/CVECard'
-import { AssetList } from '../components/assets/AssetList'
 import { RewardDisplay } from '../components/results/RewardDisplay'
-import { StatCards } from '../components/dashboard/StatCards'
 
 export function DashboardPage() {
   const { observation, reward, done, loading, error, history, reset, step } = useEnvironment()
-  const [priorityOrder, setPriorityOrder] = useState([])
-  const [justifications, setJustifications] = useState({})
-  const [activeTask, setActiveTask] = useState('task1_severity_ranking')
+  const [activeTask, setActiveTask] = useState('easy')
 
   useEffect(() => {
     reset(activeTask)
-  }, [activeTask])
+  }, [activeTask, reset])
 
-  useEffect(() => {
-    if (observation?.cves) {
-      setPriorityOrder(observation.cves.map(c => c.cve_id))
+  const handleSelectCVE = (cveId) => {
+    if (!loading && !done) {
+      step(cveId)
     }
-  }, [observation])
-
-  const handleDragEnd = ({ active, over }) => {
-    if (!over || active.id === over.id) return
-    const oldIdx = priorityOrder.indexOf(active.id)
-    const newIdx = priorityOrder.indexOf(over.id)
-    setPriorityOrder(arrayMove(priorityOrder, oldIdx, newIdx))
   }
 
-  const handleSubmit = () => {
-    // For tasks that request exactly 5 or a subset, we can just pass the priorityOrder
-    // Backend grading evaluates up to the max patches usually.
-    step(priorityOrder, justifications)
-  }
+  // Determine what has already been selected across steps
+  const selectedCveIds = history.map(h => h.action)
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 24, padding: 24,
@@ -47,16 +31,14 @@ export function DashboardPage() {
           <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>AI-driven security vulnerability prioritization console</p>
         </div>
 
-        <StatCards observation={observation} />
-
         <div style={{ margin: '24px 0 16px', display: 'flex', gap: 8 }}>
-          {['task1_severity_ranking', 'task2_asset_prioritization', 'task3_full_triage'].map(t => (
+          {['easy', 'medium', 'hard'].map(t => (
             <button key={t} onClick={() => setActiveTask(t)}
               style={{ background: activeTask === t ? 'var(--accent-blue)' : 'var(--bg-elevated)',
                 color: activeTask === t ? '#fff' : 'var(--text-secondary)',
                 border: '1px solid var(--border)', borderRadius: 6, padding: '8px 16px',
                 fontSize: 13, cursor: 'pointer', fontFamily: 'var(--font-mono)' }}>
-              {t.replace('task', 'T').replace(/_/g, ' ')}
+              {t.toUpperCase()}
             </button>
           ))}
         </div>
@@ -71,41 +53,57 @@ export function DashboardPage() {
           <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 20,
             background: 'var(--bg-elevated)', borderRadius: 8, padding: '16px',
             borderLeft: '4px solid var(--accent-teal)' }}>
-            {observation.message.split('\n').map((line, i) => <div key={i} style={{ marginBottom: line.trim() === '' ? 8 : 4 }}>{line}</div>)}
+            <div style={{ marginBottom: 4 }}>Current Step: {observation.step} / 3</div>
+            {observation.message && <div>{observation.message}</div>}
+            {done && <div style={{ color: 'var(--accent-blue)', fontWeight: 600, marginTop: 4 }}>Episode Complete! Reset to test again.</div>}
           </div>
         )}
 
-        {/* Drag-and-drop CVE list */}
-        {observation?.cves && (
-          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={priorityOrder} strategy={verticalListSortingStrategy}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {priorityOrder.map((id, idx) => {
-                  const cve = observation.cves.find(c => c.cve_id === id)
-                  return cve ? <CVECard key={id} cve={cve} rank={idx + 1} /> : null
-                })}
-              </div>
-            </SortableContext>
-          </DndContext>
+        {/* Clickable CVE list */}
+        {observation?.vulnerabilities && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {observation.vulnerabilities.map((cve) => {
+              const isSelected = selectedCveIds.includes(cve.id)
+              return (
+                <CVECard 
+                  key={cve.id} 
+                  cve={cve} 
+                  onSelect={handleSelectCVE}
+                  selected={isSelected}
+                  disabled={loading || done || isSelected} 
+                />
+              )
+            })}
+          </div>
         )}
-
-        <button onClick={handleSubmit} disabled={loading || done}
-          style={{ marginTop: 24, width: '100%', padding: '14px',
-            background: done ? 'var(--bg-elevated)' : 'var(--accent-blue)',
-            color: '#fff', border: 'none', borderRadius: 8, fontSize: 15,
-            fontWeight: 600, cursor: loading || done ? 'not-allowed' : 'pointer' }}>
-          {loading ? 'Submitting...' : done ? 'Episode complete (Reset to try again)' : 'Submit Triage Ranking'}
-        </button>
       </div>
 
-      {/* Right column — Assets + Results */}
+      {/* Right column — Results */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-        {reward !== null && (
-          <RewardDisplay reward={reward}
-            breakdown={history[history.length - 1]?.breakdown}
-            feedback={history[history.length - 1]?.feedback} />
-        )}
-        {observation?.assets && <AssetList assets={observation.assets} />}
+        <div style={{ background: 'var(--bg-surface)', padding: 20, borderRadius: 8, border: '1px solid var(--border)' }}>
+            <h3 style={{ margin: '0 0 16px', fontSize: 16 }}>Episode Log</h3>
+            {history.length === 0 ? (
+                <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>No actions taken yet.</p>
+            ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {history.map((h, i) => (
+                        <div key={i} style={{ padding: 12, background: 'var(--bg-elevated)', borderRadius: 6, fontSize: 13 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                                <strong>Step {i + 1}</strong>
+                                <span>Reward: {h.reward?.toFixed(2)}</span>
+                            </div>
+                            <div style={{ color: 'var(--text-secondary)' }}>Selected: {h.action}</div>
+                            {h.error && <div style={{ color: 'var(--critical)', marginTop: 4 }}>Error: {h.error}</div>}
+                        </div>
+                    ))}
+                </div>
+            )}
+            
+            {reward !== null && (
+              <RewardDisplay 
+                reward={history.reduce((acc, curr) => acc + (curr.reward || 0), 0)} />
+            )}
+        </div>
       </div>
     </div>
   )

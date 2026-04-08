@@ -1,0 +1,502 @@
+[
+  {
+    "id": "CVE-1999-0236",
+    "cvss": 7.5,
+    "description": "ScriptAlias directory in NCSA and Apache httpd allowed attackers to read CGI programs.",
+    "severity_label": "HIGH",
+    "published_date": "1997-01-01",
+    "affected_software": [
+      "apache http_server"
+    ]
+  },
+  {
+    "id": "CVE-1999-0239",
+    "cvss": 7.5,
+    "description": "Netscape FastTrack Web server lists files when a lowercase \"get\" command is used instead of an uppercase GET.",
+    "severity_label": "HIGH",
+    "published_date": "1998-01-01",
+    "affected_software": [
+      "netscape fasttrack_server"
+    ]
+  },
+  {
+    "id": "CVE-1999-1152",
+    "cvss": 7.5,
+    "description": "Compaq/Microcom 6000 Access Integrator does not disconnect a client after a certain number of failed login attempts, which allows remote attackers to guess usernames or passwords via a brute force attack.",
+    "severity_label": "HIGH",
+    "published_date": "1998-06-03",
+    "affected_software": [
+      "compaq microcom_6000"
+    ]
+  },
+  {
+    "id": "CVE-1999-1568",
+    "cvss": 7.5,
+    "description": "Off-by-one error in NcFTPd FTP server before 2.4.1 allows a remote attacker to cause a denial of service (crash) via a long PORT command.",
+    "severity_label": "HIGH",
+    "published_date": "1999-01-01",
+    "affected_software": [
+      "ncftp ncftpd_server"
+    ]
+  },
+  {
+    "id": "CVE-1999-1549",
+    "cvss": 7.8,
+    "description": "Lynx 2.x does not properly distinguish between internal and external HTML, which may allow a local attacker to read a \"secure\" hidden form value from a temporary file and craft a LYNXOPTIONS: URL that causes Lynx to modify the user's configuration file and execute commands.",
+    "severity_label": "HIGH",
+    "published_date": "1999-11-16",
+    "affected_software": [
+      "lynx_project lynx"
+    ]
+  },
+  {
+    "id": "CVE-1999-1127",
+    "cvss": 7.5,
+    "description": "Windows NT 4.0 does not properly shut down invalid named pipe RPC connections, which allows remote attackers to cause a denial of service (resource exhaustion) via a series of connections containing malformed data, aka the \"Named Pipes Over RPC\" vulnerability.",
+    "severity_label": "HIGH",
+    "published_date": "1999-12-31",
+    "affected_software": [
+      "microsoft windows_nt"
+    ]
+  },
+  {
+    "id": "CVE-2000-0258",
+    "cvss": 7.5,
+    "description": "IIS 4.0 and 5.0 allows remote attackers to cause a denial of service by sending many URLs with a large number of escaped characters, aka the \"Myriad Escaped Characters\" Vulnerability.",
+    "severity_label": "HIGH",
+    "published_date": "2000-04-12",
+    "affected_software": [
+      "microsoft internet_information_server"
+    ]
+  },
+  {
+    "id": "CVE-2000-0342",
+    "cvss": 7.5,
+    "description": "Eudora 4.x allows remote attackers to bypass the user warning for executable attachments such as .exe, .com, and .bat by using a .lnk file that refers to the attachment, aka \"Stealth Attachment.\"",
+    "severity_label": "HIGH",
+    "published_date": "2000-04-28",
+    "affected_software": [
+      "qualcomm eudora"
+    ]
+  },
+  {
+    "id": "CVE-2000-0497",
+    "cvss": 7.5,
+    "description": "IBM WebSphere server 3.0.2 allows a remote attacker to view source code of a JSP program by requesting a URL which provides the JSP extension in upper case.",
+    "severity_label": "HIGH",
+    "published_date": "2000-06-08",
+    "affected_software": [
+      "ibm websphere_application_server"
+    ]
+  },
+  {
+    "id": "CVE-2000-0498",
+    "cvss": 7.5,
+    "description": "Unify eWave ServletExec allows a remote attacker to view source code of a JSP program by requesting a URL which provides the JSP extension in upper case.",
+    "severity_label": "HIGH",
+    "published_date": "2000-06-08",
+    "affected_software": [
+      "unify ewave_servletexec"
+    ]
+  },
+  {
+    "id": "CVE-2000-0499",
+    "cvss": 7.5,
+    "description": "The default configuration of BEA WebLogic 3.1.8 through 4.5.1 allows a remote attacker to view source code of a JSP program by requesting a URL which provides the JSP extension in upper case.",
+    "severity_label": "HIGH",
+    "published_date": "2000-06-08",
+    "affected_software": [
+      "bea weblogic_server"
+    ]
+  },
+  {
+    "id": "CVE-2001-0006",
+    "cvss": 7.1,
+    "description": "The Winsock2ProtocolCatalogMutex mutex in Windows NT 4.0 has inappropriate Everyone/Full Control permissions, which allows local users to modify the permissions to \"No Access\" and disable Winsock network connectivity to cause a denial of service, aka the \"Winsock Mutex\" vulnerability.",
+    "severity_label": "HIGH",
+    "published_date": "2001-02-12",
+    "affected_software": [
+      "microsoft windows_nt"
+    ]
+  },
+  {
+    "id": "CVE-2001-0195",
+    "cvss": 7.8,
+    "description": "sash before 3.4-4 in Debian GNU/Linux does not properly clone /etc/shadow, which makes it world-readable and could allow local users to gain privileges via password cracking.",
+    "severity_label": "HIGH",
+    "published_date": "2001-03-26",
+    "affected_software": [
+      "debian debian_linux"
+    ]
+  },
+  {
+    "id": "CVE-2001-0334",
+    "cvss": 7.5,
+    "description": "FTP service in IIS 5.0 and earlier allows remote attackers to cause a denial of service via a wildcard sequence that generates a long string when it is expanded.",
+    "severity_label": "HIGH",
+    "published_date": "2001-06-27",
+    "affected_software": [
+      "microsoft internet_information_server"
+    ]
+  },
+  {
+    "id": "CVE-2001-1043",
+    "cvss": 7.5,
+    "description": "ArGoSoft FTP Server 1.2.2.2 allows remote attackers to read arbitrary files and directories by uploading a .lnk (link) file that points to the target file.",
+    "severity_label": "HIGH",
+    "published_date": "2001-07-01",
+    "affected_software": [
+      "argosoft ftp_server"
+    ]
+  },
+  {
+    "id": "CVE-2001-1386",
+    "cvss": 7.5,
+    "description": "WFTPD 3.00 allows remote attackers to read arbitrary files by uploading a (link) file that ends in a \".lnk.\" extension, which bypasses WFTPD's check for a \".lnk\" extension.",
+    "severity_label": "HIGH",
+    "published_date": "2001-07-01",
+    "affected_software": [
+      "texasimperialsoftware wftpd"
+    ]
+  },
+  {
+    "id": "CVE-2001-1042",
+    "cvss": 7.5,
+    "description": "Transsoft Broker 5.9.5.0 allows remote attackers to read arbitrary files and directories by uploading a .lnk (link) file that points to the target file.",
+    "severity_label": "HIGH",
+    "published_date": "2001-07-02",
+    "affected_software": [
+      "transsoft broker_ftp_server"
+    ]
+  },
+  {
+    "id": "CVE-2001-1238",
+    "cvss": 7.8,
+    "description": "Task Manager in Windows 2000 does not allow local users to end processes with uppercase letters named (1) winlogon.exe, (2) csrss.exe, (3) smss.exe and (4) services.exe via the Process tab which could allow local users to install Trojan horses that cannot be stopped with the Task Manager.",
+    "severity_label": "HIGH",
+    "published_date": "2001-07-16",
+    "affected_software": [
+      "microsoft windows_2000"
+    ]
+  },
+  {
+    "id": "CVE-2001-0497",
+    "cvss": 7.8,
+    "description": "dnskeygen in BIND 8.2.4 and earlier, and dnssec-keygen in BIND 9.1.2 and earlier, set insecure permissions for a HMAC-MD5 shared secret key file used for DNS Transactional Signatures (TSIG), which allows attackers to obtain the keys and perform dynamic DNS updates.",
+    "severity_label": "HIGH",
+    "published_date": "2001-07-21",
+    "affected_software": [
+      "isc bind"
+    ]
+  },
+  {
+    "id": "CVE-2001-1471",
+    "cvss": 8.8,
+    "description": "prefs.php in phpBB 1.4.0 and earlier allows remote authenticated users to execute arbitrary PHP code via an invalid language value, which prevents the variables (1) $l_statsblock in prefs.php or (2) $l_privnotify in auth.php from being properly initialized, which can be modified by the user and late",
+    "severity_label": "HIGH",
+    "published_date": "2001-07-31",
+    "affected_software": [
+      "phpbb phpbb"
+    ]
+  },
+  {
+    "id": "CVE-2001-1452",
+    "cvss": 7.5,
+    "description": "By default, DNS servers on Windows NT 4.0 and Windows 2000 Server cache glue records received from non-delegated name servers, which allows remote attackers to poison the DNS cache via spoofed DNS responses.",
+    "severity_label": "HIGH",
+    "published_date": "2001-08-31",
+    "affected_software": [
+      "microsoft windows_2000"
+    ]
+  },
+  {
+    "id": "CVE-2001-0795",
+    "cvss": 7.5,
+    "description": "Perception LiteServe 1.25 allows remote attackers to obtain source code of CGI scripts via URLs that contain MS-DOS conventions such as (1) upper case letters or (2) 8.3 file names.",
+    "severity_label": "HIGH",
+    "published_date": "2001-10-18",
+    "affected_software": [
+      "cmfperception liteserve"
+    ]
+  },
+  {
+    "id": "CVE-2001-0950",
+    "cvss": 7.5,
+    "description": "ValiCert Enterprise Validation Authority (EVA) Administration Server 3.3 through 4.2.1 uses insufficiently random data to (1) generate session tokens for HSMs using the C rand function, or (2) generate certificates or keys using /dev/urandom instead of another source which blocks when the entropy po",
+    "severity_label": "HIGH",
+    "published_date": "2001-12-04",
+    "affected_software": [
+      "valicert enterprise_validation_authority"
+    ]
+  },
+  {
+    "id": "CVE-2001-0830",
+    "cvss": 7.5,
+    "description": "6tunnel 0.08 and earlier does not properly close sockets that were initiated by a client, which allows remote attackers to cause a denial of service (resource exhaustion) by repeatedly connecting to and disconnecting from the server.",
+    "severity_label": "HIGH",
+    "published_date": "2001-12-06",
+    "affected_software": [
+      "6tunnel_project 6tunnel"
+    ]
+  },
+  {
+    "id": "CVE-2001-1515",
+    "cvss": 7.5,
+    "description": "Macintosh clients, when using NT file system volumes on Windows 2000 SP1, create subdirectories and automatically modify the inherited NTFS permissions, which may cause the directories to have less restrictive permissions than intended.",
+    "severity_label": "HIGH",
+    "published_date": "2001-12-31",
+    "affected_software": [
+      "microsoft windows_2000"
+    ]
+  },
+  {
+    "id": "CVE-2001-1536",
+    "cvss": 7.5,
+    "description": "Autogalaxy stores usernames and passwords in cleartext in cookies, which makes it easier for remote attackers to obtain authentication information and gain unauthorized access via sniffing or a cross-site scripting attack.",
+    "severity_label": "HIGH",
+    "published_date": "2001-12-31",
+    "affected_software": [
+      "audiogalaxy audiogalaxy"
+    ]
+  },
+  {
+    "id": "CVE-2001-1537",
+    "cvss": 7.5,
+    "description": "The default \"basic\" security setting' in config.php for TWIG webmail 2.7.4 and earlier stores cleartext usernames and passwords in cookies, which could allow attackers to obtain authentication information and gain privileges.",
+    "severity_label": "HIGH",
+    "published_date": "2001-12-31",
+    "affected_software": [
+      "symfony twig"
+    ]
+  },
+  {
+    "id": "CVE-2001-1546",
+    "cvss": 7.8,
+    "description": "Pathways Homecare 6.5 uses weak encryption for user names and passwords, which allows local users to gain privileges by recovering the passwords from the pwhc.ini file.",
+    "severity_label": "HIGH",
+    "published_date": "2001-12-31",
+    "affected_software": [
+      "mckesson pathways_homecare"
+    ]
+  },
+  {
+    "id": "CVE-2002-0051",
+    "cvss": 7.8,
+    "description": "Windows 2000 allows local users to prevent the application of new group policy settings by opening Group Policy files with exclusive-read access.",
+    "severity_label": "HIGH",
+    "published_date": "2002-04-04",
+    "affected_software": [
+      "microsoft windows_2000"
+    ]
+  },
+  {
+    "id": "CVE-2002-0184",
+    "cvss": 7.8,
+    "description": "Sudo before 1.6.6 contains an off-by-one error that can result in a heap-based buffer overflow that may allow local users to gain root privileges via special characters in the -p (prompt) argument, which are not properly expanded.",
+    "severity_label": "HIGH",
+    "published_date": "2002-05-16",
+    "affected_software": [
+      "debian debian_linux"
+    ]
+  },
+  {
+    "id": "CVE-2002-0401",
+    "cvss": 7.5,
+    "description": "SMB dissector in Ethereal 0.9.3 and earlier allows remote attackers to cause a denial of service (crash) or execute arbitrary code via malformed packets that cause Ethereal to dereference a NULL pointer.",
+    "severity_label": "HIGH",
+    "published_date": "2002-06-18",
+    "affected_software": [
+      "debian debian_linux"
+    ]
+  },
+  {
+    "id": "CVE-2002-0367",
+    "cvss": 7.8,
+    "description": "smss.exe debugging subsystem in Windows NT and Windows 2000 does not properly authenticate programs that connect to other programs, which allows local users to gain administrator or SYSTEM privileges by duplicating a handle to a privileged process, as demonstrated by DebPloit.",
+    "severity_label": "HIGH",
+    "published_date": "2002-06-25",
+    "affected_software": [
+      "microsoft windows_2000"
+    ]
+  },
+  {
+    "id": "CVE-2002-0653",
+    "cvss": 7.8,
+    "description": "Off-by-one buffer overflow in the ssl_compat_directive function, as called by the rewrite_command hook for mod_ssl Apache module 2.8.9 and earlier, allows local users to execute arbitrary code as the Apache server user via .htaccess files with long entries.",
+    "severity_label": "HIGH",
+    "published_date": "2002-07-11",
+    "affected_software": [
+      "modssl mod_ssl"
+    ]
+  },
+  {
+    "id": "CVE-2002-0704",
+    "cvss": 7.5,
+    "description": "The Network Address Translation (NAT) capability for Netfilter (\"iptables\") 1.2.6a and earlier leaks translated IP addresses in ICMP error messages.",
+    "severity_label": "HIGH",
+    "published_date": "2002-07-26",
+    "affected_software": [
+      "linux linux_kernel"
+    ]
+  },
+  {
+    "id": "CVE-2002-0485",
+    "cvss": 7.5,
+    "description": "Norton Anti-Virus (NAV) allows remote attackers to bypass content filtering via attachments whose Content-Type and Content-Disposition headers are mixed upper and lower case, which is ignored by some mail clients.",
+    "severity_label": "HIGH",
+    "published_date": "2002-08-12",
+    "affected_software": [
+      "symantec norton_antivirus"
+    ]
+  },
+  {
+    "id": "CVE-2002-0844",
+    "cvss": 7.8,
+    "description": "Off-by-one overflow in the CVS PreservePermissions of rcs.c for CVSD before 1.11.2 allows local users to execute arbitrary code.",
+    "severity_label": "HIGH",
+    "published_date": "2002-08-12",
+    "affected_software": [
+      "distrotech cvs"
+    ]
+  },
+  {
+    "id": "CVE-2002-0969",
+    "cvss": 7.8,
+    "description": "Buffer overflow in MySQL daemon (mysqld) before 3.23.50, and 4.0 beta before 4.02, on the Win32 platform, allows local users to execute arbitrary code via a long \"datadir\" parameter in the my.ini initialization file, whose permissions on Windows allow Full Control to the Everyone group.",
+    "severity_label": "HIGH",
+    "published_date": "2002-10-11",
+    "affected_software": [
+      "microsoft windows"
+    ]
+  },
+  {
+    "id": "CVE-2002-1372",
+    "cvss": 7.5,
+    "description": "Common Unix Printing System (CUPS) 1.1.14 through 1.1.17 does not properly check the return values of various file and socket operations, which could allow a remote attacker to cause a denial of service (resource exhaustion) by causing file descriptors to be assigned and not released, as demonstrate",
+    "severity_label": "HIGH",
+    "published_date": "2002-12-26",
+    "affected_software": [
+      "apple mac_os_x"
+    ]
+  },
+  {
+    "id": "CVE-2002-1657",
+    "cvss": 7.5,
+    "description": "PostgreSQL uses the username for a salt when generating passwords, which makes it easier for remote attackers to guess passwords via a brute force attack.",
+    "severity_label": "HIGH",
+    "published_date": "2002-12-31",
+    "affected_software": [
+      "postgresql postgresql"
+    ]
+  },
+  {
+    "id": "CVE-2002-1697",
+    "cvss": 7.5,
+    "description": "Electronic Code Book (ECB) mode in VTun 2.0 through 2.5 uses a weak encryption algorithm that produces the same ciphertext from the same plaintext blocks, which could allow remote attackers to gain sensitive information.",
+    "severity_label": "HIGH",
+    "published_date": "2002-12-31",
+    "affected_software": [
+      "vtun_project vtun"
+    ]
+  },
+  {
+    "id": "CVE-2002-1706",
+    "cvss": 7.5,
+    "description": "Cisco IOS software 11.3 through 12.2 running on Cisco uBR7200 and uBR7100 series Universal Broadband Routers allows remote attackers to modify Data Over Cable Service Interface Specification (DOCSIS) settings via a DOCSIS file without a Message Integrity Check (MIC) signature, which is approved by t",
+    "severity_label": "HIGH",
+    "published_date": "2002-12-31",
+    "affected_software": [
+      "cisco ubr7100"
+    ]
+  },
+  {
+    "id": "CVE-2002-1721",
+    "cvss": 7.5,
+    "description": "Off-by-one error in alterMIME 0.1.10 and 0.1.11 allows remote attackers to cause a denial of service (crash) via an x-header that causes snprintf overwrite the FFGET_FILE variable with a (null) byte.",
+    "severity_label": "HIGH",
+    "published_date": "2002-12-31",
+    "affected_software": [
+      "pldaniels altermime"
+    ]
+  },
+  {
+    "id": "CVE-2002-1745",
+    "cvss": 7.5,
+    "description": "Off-by-one error in the CodeBrws.asp sample script in Microsoft IIS 5.0 allows remote attackers to view the source code for files with extensions containing with one additional character after .html, .htm, .asp, or .inc, such as .aspx files.",
+    "severity_label": "HIGH",
+    "published_date": "2002-12-31",
+    "affected_software": [
+      "microsoft internet_information_services"
+    ]
+  },
+  {
+    "id": "CVE-2002-1796",
+    "cvss": 7.8,
+    "description": "ChaiVM EZloader for HP color LaserJet 4500 and 4550 and HP LaserJet 4100 and 8150 does not properly verify JAR signatures for new services, which allows local users to load unauthorized Chai services.",
+    "severity_label": "HIGH",
+    "published_date": "2002-12-31",
+    "affected_software": [
+      "hp laserjet_4100"
+    ]
+  },
+  {
+    "id": "CVE-2002-1800",
+    "cvss": 7.5,
+    "description": "phpRank 1.8 stores the administrative password in plaintext on the server and in the \"ap\" cookie, which allows remote attackers to retrieve the administrative password.",
+    "severity_label": "HIGH",
+    "published_date": "2002-12-31",
+    "affected_software": [
+      "phprank phprank"
+    ]
+  },
+  {
+    "id": "CVE-2002-1810",
+    "cvss": 7.5,
+    "description": "D-Link DWL-900AP+ Access Point 2.1 and 2.2 allows remote attackers to access the TFTP server without authentication and read the config.img file, which contains sensitive information such as the administrative password, the WEP encryption keys, and network configuration information.",
+    "severity_label": "HIGH",
+    "published_date": "2002-12-31",
+    "affected_software": [
+      "dlink dwl-900ap\\+"
+    ]
+  },
+  {
+    "id": "CVE-2002-1844",
+    "cvss": 7.8,
+    "description": "Microsoft Windows Media Player (WMP) 6.3, when installed on Solaris, installs executables with world-writable permissions, which allows local users to delete or modify the executables to gain privileges.",
+    "severity_label": "HIGH",
+    "published_date": "2002-12-31",
+    "affected_software": [
+      "oracle solaris"
+    ]
+  },
+  {
+    "id": "CVE-2002-1850",
+    "cvss": 7.5,
+    "description": "mod_cgi in Apache 2.0.39 and 2.0.40 allows local users and possibly remote attackers to cause a denial of service (hang and memory consumption) by causing a CGI script to send a large amount of data to stderr, which results in a read/write deadlock between httpd and the CGI script.",
+    "severity_label": "HIGH",
+    "published_date": "2002-12-31",
+    "affected_software": [
+      "apache http_server"
+    ]
+  },
+  {
+    "id": "CVE-2002-1872",
+    "cvss": 7.5,
+    "description": "Microsoft SQL Server 6.0 through 2000, with SQL Authentication enabled, uses weak password encryption (XOR), which allows remote attackers to sniff and decrypt the password.",
+    "severity_label": "HIGH",
+    "published_date": "2002-12-31",
+    "affected_software": [
+      "microsoft sql_server"
+    ]
+  },
+  {
+    "id": "CVE-2002-1910",
+    "cvss": 7.5,
+    "description": "Click2Learn Ingenium Learning Management System 5.1 and 6.1 uses weak encryption for passwords (reversible algorithm), which allows attackers to obtain passwords.",
+    "severity_label": "HIGH",
+    "published_date": "2002-12-31",
+    "affected_software": [
+      "click-2 ingenium_learning_management_system"
+    ]
+  }
+]

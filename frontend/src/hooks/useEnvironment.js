@@ -25,20 +25,22 @@ export function useEnvironment() {
     }
   }, [])
 
-  const step = useCallback(async (priorityOrder, justifications = {}) => {
+  const step = useCallback(async (targetId) => {
     setLoading(true)
     setError(null)
     try {
-      const result = await stepEnv({ priority_order: priorityOrder, justifications })
+      const action = { action_type: 'prioritize', target_id: targetId }
+      const result = await stepEnv(action)
+      
       setObservation(result.observation)
       setReward(result.reward)
       setDone(result.done)
+      
       setHistory(prev => [...prev, {
         step: result.observation?.step || 0,
         reward: result.reward,
-        action: priorityOrder,
-        breakdown: result.info?.breakdown,
-        feedback: result.info?.feedback
+        action: targetId,
+        error: result.info?.error
       }])
       return result
     } catch (e) {

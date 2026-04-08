@@ -1,6 +1,10 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from env.environment import SecurityTriageEnv
+from env.security_env import SecurityEnv
 from env.models import Action, StepResult, ResetResult
 from typing import Optional
 import uvicorn
@@ -18,8 +22,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-env = SecurityTriageEnv()
-
+env = SecurityEnv()
 
 @app.get("/health")
 def root():
@@ -27,32 +30,40 @@ def root():
 
 
 @app.post("/reset", response_model=ResetResult)
-def reset(task_id: Optional[str] = "task1_severity_ranking"):
+def reset(task_id: Optional[str] = "easy"):
     try:
-        result = env.reset(task_id=task_id)
-        return result
+        # Determine simple task difficulty if it's full string
+        if "easy" in task_id or "task1" in task_id:
+            env.task = "easy"
+        elif "medium" in task_id or "task2" in task_id:
+            env.task = "medium"
+        else:
+            env.task = "hard"
+
+        obs = env.reset()
+        return ResetResult(observation=obs, info={"task_id": env.task})
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.post("/step", response_model=StepResult)
 def step(action: Action):
-    result = env.step(action)
-    return result
+    obs, reward, done, info = env.step(action)
+    return StepResult(observation=obs, reward=reward, done=done, info=info)
 
 
 @app.get("/state")
 def state():
-    return env.get_state()
+    return env.state()
 
 
 @app.get("/tasks")
 def list_tasks():
     return {
         "tasks": [
-            {"id": "task1_severity_ranking", "difficulty": "easy"},
-            {"id": "task2_asset_prioritization", "difficulty": "medium"},
-            {"id": "task3_full_triage", "difficulty": "hard"}
+            {"id": "easy", "difficulty": "easy"},
+            {"id": "medium", "difficulty": "medium"},
+            {"id": "hard", "difficulty": "hard"}
         ]
     }
 
