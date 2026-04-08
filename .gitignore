@@ -138,7 +138,7 @@ celerybeat.pid
 .env
 .envrc
 .venv
-env/
+# env/ (intentionally commented out so the project's env logic folder is committed)
 venv/
 ENV/
 env.bak/
