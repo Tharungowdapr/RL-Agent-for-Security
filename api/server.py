@@ -3,6 +3,8 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from env.security_env import SecurityEnv
 from env.models import Action, StepResult, ResetResult
@@ -67,6 +69,21 @@ def list_tasks():
         ]
     }
 
+
+# Serve frontend static files
+# Mount the dist folder that will be created by the build process
+frontend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../frontend/dist"))
+
+if os.path.exists(frontend_path):
+    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="static")
+
+    @app.exception_handler(404)
+    async def custom_404_handler(request, __):
+        return FileResponse(os.path.join(frontend_path, "index.html"))
+else:
+    @app.get("/")
+    def root_no_frontend():
+        return {"message": "Server is running, but frontend was not found. Build the frontend first."}
 
 if __name__ == "__main__":
     uvicorn.run("api.server:app", host="0.0.0.0", port=7860, reload=False)
