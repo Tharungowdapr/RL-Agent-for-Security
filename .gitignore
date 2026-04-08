@@ -140,9 +140,11 @@ celerybeat.pid
 .venv
 # env/ (intentionally commented out so the project's env logic folder is committed)
 venv/
-ENV/
+# ENV/ — removed: on macOS case-insensitive FS this also ignores env/
 env.bak/
 venv.bak/
+# Ensure the project's env package is always tracked
+!env/
 
 # Spyder project settings
 .spyderproject
