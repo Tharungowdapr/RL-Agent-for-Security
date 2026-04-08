@@ -108,15 +108,24 @@ def fetch_cves_from_api(limit: int = 50) -> List[Dict[str, Any]]:
             with open(CACHE_PATH, "w") as f:
                 json.dump(cves, f, indent=2)
             return cves
-    except Exception as e:
-        print(f"API fetch failed: {e}")
+    except Exception:
+        pass
 
     return _get_fallback_cves()
 
 def load_cves():
     """Load CVEs and return as a list of dicts for the new security_env."""
-    cves = fetch_cves_from_api()
-    
+    cves = None
+    if os.path.exists(CACHE_PATH):
+        try:
+            with open(CACHE_PATH, "r") as f:
+                cves = json.load(f)
+        except Exception:
+            pass
+
+    if not cves:
+        cves = fetch_cves_from_api()
+
     # Pre-fetch EPSS for the loaded CVEs
     if cves:
         cve_ids = [c["id"] for c in cves]

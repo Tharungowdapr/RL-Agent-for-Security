@@ -3,11 +3,11 @@ description: RL environment for cybersecurity triage using real CVE, EPSS, and K
 
 tasks:
   easy:
-    description: "Prioritize vulnerabilities based strictly on simple severity (CVSS score)."
+    description: Select highest severity vulnerability
   medium:
-    description: "Prioritize vulnerabilities by weighing base severity against EPSS exploit probability."
+    description: Use severity + EPSS
   hard:
-    description: "Full triage simulation calculating probability across severity, EPSS, and CISA KEV catalog with duplicate penalties."
+    description: Full prioritization with KEV and penalties
 
 observation_space:
   type: list
