@@ -1,128 +1,192 @@
-# 🔐 Security Vulnerability Triage — OpenEnv
+# Autonomous Cybersecurity Triage Environment using Reinforcement Learning
 
-An active OpenEnv simulator where an AI agent works alongside a **Deterministic Threat Intel Engine** to triage real-world CVEs across a simulated company's asset inventory.
+## What is this project?
 
-Please refer to [setup.md](setup.md) for comprehensive setup and running instructions, and [detail.md](detail.md) for deep-dives into the mathematical RL priorities.
+Security teams today are buried under thousands of vulnerability alerts. Deciding which ones to fix first — and in what order — is one of the hardest and most consequential decisions a SOC analyst makes daily.
 
----
+This project turns that problem into a **reinforcement learning challenge**. Instead of static scoring (rank everything by CVSS, done), an AI agent makes sequential decisions, learns from feedback, and improves its prioritization strategy over time — just like a seasoned analyst would.
 
-## 📖 What is it?
-Every piece of software has bugs. Some bugs are harmless, some can be exploited by hackers to steal data, crash systems, or take control of servers. These exploitable bugs are called **vulnerabilities** (CVEs).
-
-The problem? A large company gets **hundreds of new CVEs every week**. They can't patch everything at once. 
-
-That job is called **Vulnerability Triage**.
-
-### What This Environment Does
-This project simulates the exact pressures of a Security Operations Center (SOC). It:
-1. Streams real vulnerabilities out of the National Vulnerability Database.
-2. Dynamically enriches them with **Live Threat Intelligence**:
-    - **EPSS:** Exploit Prediction Scoring System probabilities.
-    - **CISA KEV:** Real-time Known Exploited Vulnerability flags.
-3. Tests an AI Agent's capacity to digest this context, rank the vulnerabilities mathematically by *actual business risk*, and justify its patching decisions into a JSON structure!
+The agent is grounded in real-world threat data: CVE identifiers, EPSS exploit probability scores, and CISA's Known Exploited Vulnerabilities (KEV) catalog.
 
 ---
 
-## 🗂️ The 3 Tasks
+## Why Reinforcement Learning?
 
-### 🟢 Task 1 — Basic Severity Ranking (Easy)
-**Scenario:** Agent receives 10 CVEs with primitive CVSS severity scores and must sort them safely.
-**Grader:** Sort-Accuracy metric vs True Context Ranking.
+Traditional vulnerability scanners spit out a ranked list. That's fine, but it doesn't capture the nuance of real triage: a low-severity bug actively being exploited in the wild matters more than a critical one that's theoretical. Context, likelihood, and asset value all interact.
 
-### 🟡 Task 2 — Asset-Aware Prioritization (Medium)
-**Scenario:** Agent receives CVEs and a live Company Asset Manifest detailing server systems and importance weight constraints. 
-**Grader:** Multi-dimensional scoring evaluating severity mapping to correct asset criticalities, plus EPSS/KEV probability weightings.
-
-### 🔴 Task 3 — Full Triage Under Noise + AI Fallback (Hard)
-**Scenario:** Agent receives noise (Duplicate logs, 2013-era outdated vulnerabilities, disputed vulnerabilities) and massive threat flags.
-**Grader:** Severe multi-criteria evaluation punishing duplicates correctly formatting exactly 5 true actionable vulnerabilities out of a sea of 20 parameters.
+RL handles this naturally. Each decision the agent makes affects its cumulative score, encouraging it to learn policies that reflect real-world risk — not just raw severity numbers.
 
 ---
 
-## 🎨 Interactive Frontend Dashboard
-This environment now comes with a fully engineered **Drag-and-Drop React Dashboard** seamlessly served by FastAPI!
-- View rich CVE cards complete with **CISA KEV alarms** and sliding **EPSS visual probability bars**!
-- Manually run triage and immediately view how the RL Grader responds through a dynamic **Radial Score breakdown**!
-- Navigate to `http://localhost:7860/` after running the backend to interact live with the OpenEnv server visually.
+## How the Environment Works
+
+```mermaid
+graph TD
+    classDef signal fill:#0b5c43,stroke:#fff,stroke-width:2px,color:#fff;
+    classDef process fill:#3b3687,stroke:#fff,stroke-width:2px,color:#fff;
+    classDef rl fill:#632b17,stroke:#fff,stroke-width:2px,color:#fff;
+    classDef agent fill:#75460a,stroke:#fff,stroke-width:2px,color:#fff;
+    classDef reward fill:#225211,stroke:#fff,stroke-width:2px,color:#fff;
+
+    CVE["CVE<br/>Vulnerability IDs"]:::signal
+    EPSS["EPSS<br/>Exploit probability"]:::signal
+    KEV["KEV<br/>Active exploits in wild"]:::signal
+
+    FP["Feature processing<br/>Normalise + combine signals"]:::process
+
+    RL["RL environment<br/>Observation + action space"]:::rl
+    Agent["Agent<br/>Select CVE to fix"]:::agent
+    Reward["Reward<br/>+1.0 to -0.5"]:::reward
+
+    CVE --> FP
+    EPSS --> FP
+    KEV --> FP
+
+    FP --> RL
+    RL --> Agent
+    Agent --> Reward
+    Reward -. "next step" .-> RL
+```
+
+Each episode gives the agent a set of vulnerabilities to look at. It picks one per step, and can take up to **3 steps per episode**. Every choice earns or loses points based on how good that pick actually was.
+
+The agent sees the following about each vulnerability:
+
+- **CVE ID** — the unique identifier
+- **Severity score** — the CVSS base score (impact potential)
+- **EPSS score** — statistical likelihood of exploitation within 30 days
+- **KEV flag** — whether it's already being actively exploited in real attacks
+- **Asset criticality** — how important the affected system is to the organisation
+
+The agent's job is to learn: given all of this, which vulnerability deserves attention *right now*?
 
 ---
 
-## 📁 Project Structure
+## Reward Structure
 
-Here's the complete layout including the SOC visual layer:
+Good decisions are rewarded, lazy or wrong ones are penalised. The reward table is designed to push the agent toward decisions that reflect real analyst judgment — not just "pick the highest CVSS":
+
+| Decision quality | Reward |
+|---|---|
+| Best possible pick | +1.0 |
+| Top 3 picks | +0.7 |
+| Top 5 picks | +0.4 |
+| Poor selection | -0.2 |
+| Picking the same CVE twice | -0.3 |
+| Invalid action | -0.5 |
+| KEV bonus (actively exploited) | +0.2 |
+
+The KEV bonus is intentional: a bug being exploited in the wild today is worth prioritising even if its raw score is only moderate.
+
+---
+
+## Difficulty Levels
+
+The environment has three task difficulties, letting you train or test agents at increasing complexity:
+
+```mermaid
+graph LR
+    classDef easy fill:#085741,stroke:#fff,stroke-width:2px,color:#fff;
+    classDef medium fill:#693a0b,stroke:#fff,stroke-width:2px,color:#fff;
+    classDef hard fill:#612415,stroke:#fff,stroke-width:2px,color:#fff;
+
+    Easy["Easy<br/>Severity only<br/>Avg reward ~0.85"]:::easy
+    Medium["Medium<br/>Severity + EPSS<br/>Avg reward ~0.75"]:::medium
+    Hard["Hard<br/>Severity + EPSS + KEV<br/>Avg reward ~0.65"]:::hard
+
+    Easy --> Medium
+    Medium --> Hard
+```
+
+The performance drop from Easy to Hard is expected — the harder tasks require the agent to balance competing signals rather than optimise a single metric.
+
+---
+
+## Project Structure
 
 ```text
-security-triage-env/
-│
-├── 📄 detail.md                     ← Explains mathematical models & engine
-├── 📄 setup.md                      ← Quickstart
-├── 📄 openenv.yaml
-├── 📄 inference.py                  ← OpenAI AI Baseline
-├── 📄 .env                          ← Secure secrets
-│
-├── frontend/                        ← Interactive Drag-and-Drop UI (Vite/React)
-│   ├── src/
-│   │   ├── components/              ← SOC-themed visual layers (CVECard, Assets, Reward)
-│   │   └── api/envClient.js         ← Axios bridge to FastAPI env endpoints
-│   └── dist/                        ← Re-compiled UI assets
-│
-├── env/                             ← Core RL components
-│   ├── environment.py               
-│   ├── models.py                    ← Typings for CVE, Asset, Observation
-│   └── reward.py                    ← Formula scoring engines
-│
-├── data/                            ← Live Information Engine
-│   ├── nvd_fetcher.py               ← Baseline cache
-│   ├── asset_generator.py           ← Synthetic infra configs
-│   ├── threat_intel.py              ← EPSS and CISA KEV fetchers
-│   └── cache/                       
-│
-├── tasks/                           ← Mission Definitions
-│   ├── task1_severity_ranking.py    
-│   ├── task2_asset_prioritization.py 
-│   └── task3_full_triage.py         
-│
-├── api/
-│   └── server.py                    ← FastAPI logic bridging Python to Frontend
-│
-└── tests/
+env/
+  security_env.py      # Core RL environment
+  models.py            # Vulnerability data models
+
+threat_intel/
+  cve_loader.py        # CVE ingestion
+  epss.py              # EPSS score fetching
+  kev.py               # KEV catalog integration
+
+core/
+  scoring.py           # Reward calculation logic
+
+api/
+  server.py            # REST API interface
+
+inference.py           # Run the agent
+openenv.yaml           # Environment configuration
 ```
 
 ---
 
-## 🔑 Key Design Innovations
+## Getting Started
 
-**Threat Intel Enrichment:** Our CVEs don't just sit statically. When the server launches, `threat_intel.py` fires off batch queries, indexing hundreds of active exploit rates from CISA, actively upgrading all models.
+**1. Clone the repo**
+```bash
+git clone https://github.com/Tharungowdapr/RL-Agent-for-Security.git
+cd RL-Agent-for-Security
+```
 
-**Intelligent Deterministic Fallback:** What happens if the `inference.py` OpenAI API key gets rated-limited or depleted? Our pipeline intercepts the `429` failure and defaults into an internal logic processor that calculates triage scores deterministically — continuing the pipeline without ever crashing!
-
-**Single-Container Static React Build:** `FastAPI` statically mounts our React single-page application out of `frontend/dist/`. Simply launching the standard OpenEnv API server spins up the fully interactive frontend instantly for judging!
-
----
-
-## 🚀 Quick Run Guide
-
-**1. Install Dependencies**
+**2. Install dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-**2. Compile Frontend (Optional if already compiled)**
+**3. Set your credentials**
 ```bash
-cd frontend
-npm install
-npm run build
-cd ..
+export API_BASE_URL=https://api.openai.com/v1
+export MODEL_NAME=gpt-4.1-mini
+export HF_TOKEN=your_api_key_here
 ```
 
-**3. Fire Up the Server + Dashboard**
-```bash
-uvicorn api.server:app --host 0.0.0.0 --port 7860
-```
-Then visit `http://localhost:7860` to play the triage game visually!
-
-**4. Run Automated AI Benchmark**
-Fill your `.env` securely with `HF_TOKEN=your_openai_key`.
+**4. Run the agent**
 ```bash
 python inference.py
 ```
+
+**Sample output:**
+```text
+[START] task=easy env=security model=gpt-4.1-mini
+[STEP] step=1 action=CVE-123 reward=0.70 done=false error=null
+[STEP] step=2 action=CVE-456 reward=1.00 done=false error=null
+[STEP] step=3 action=CVE-789 reward=0.40 done=true  error=null
+[END]  success=true steps=3 rewards=0.70,1.00,0.40
+```
+
+---
+
+## Training Your Own Agent
+
+The environment is compatible with standard RL training frameworks. The `security_env.py` file exposes a standard `step()` / `reset()` interface, so you can plug in any of the following without modification:
+
+- **PPO** (Proximal Policy Optimization) — stable and good for continuous reward environments
+- **DQN** (Deep Q-Network) — straightforward for discrete action spaces like this one
+- **Policy gradient methods** — if you want to experiment with custom reward shaping
+
+The current baseline uses an LLM (`gpt-4.1-mini`) as the agent, which gives a useful benchmark for comparing against trained RL policies.
+
+---
+
+## Real-World Applications
+
+This isn't just a research toy. The environment maps directly onto problems that SOC and vulnerability management teams face every day. With the right integration work, this approach could plug into:
+
+- **Automated triage pipelines** — let the agent handle the first pass on a flood of new CVEs
+- **Vulnerability management platforms** — as an intelligent scoring layer on top of raw scan results
+- **Decision support tools** — surfacing the top 3–5 vulnerabilities that actually warrant attention today
+
+---
+
+## What's Next
+
+- [ ] Train PPO and DQN agents and compare against the LLM baseline
+- [ ] Add real-time CVE streaming so the environment stays current
+- [ ] Model asset-specific risk (a vuln on a public-facing server ≠ an internal dev machine)
+- [ ] Build a dashboard for SOC teams to inspect the agent's reasoning
