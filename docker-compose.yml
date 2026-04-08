@@ -1,0 +1,21 @@
+
+services:
+  env:
+    build: .
+    container_name: env-service
+    ports:
+      - "7860:7860"
+
+  agent:
+    build: ./agent
+    container_name: agent-service
+    depends_on:
+      - env
+    environment:
+      - ENV_API_URL=http://env:7860
+
+  frontend:
+    build: ./frontend
+    container_name: frontend-service
+    ports:
+      - "4173:4173"

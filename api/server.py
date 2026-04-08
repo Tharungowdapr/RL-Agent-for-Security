@@ -68,11 +68,5 @@ def list_tasks():
     }
 
 
-from fastapi.staticfiles import StaticFiles
-import os
-
-if os.path.exists("frontend/dist"):
-    app.mount("/", StaticFiles(directory="frontend/dist", html=True), name="frontend")
-
 if __name__ == "__main__":
     uvicorn.run("api.server:app", host="0.0.0.0", port=7860, reload=False)
